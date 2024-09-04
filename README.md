@@ -1,20 +1,23 @@
-Potato Disease Detection Model
-Overview
+POTATO DISEASE DETECTION
+
+Overview:
+
+
 This repository contains the implementation of a deep learning model for detecting diseases in potato plants. The model leverages Convolutional Neural Networks (CNN) to classify images of potato leaves into healthy or diseased categories. The project includes data preprocessing, model training, evaluation, and deployment using Docker and TensorFlow Serving.
 
-Features
+Features:
 Deep Learning Model: Utilizes CNNs for high-accuracy disease detection.
 Data Preprocessing: Includes image augmentation and normalization.
 Model Deployment: Dockerized application with TensorFlow Serving for scalable deployment.
 Installation
-Clone the repository:
-git clone https://github.com/yourusername/potato-disease-detection.git
+Clone the repository:https://github.com/jeetukumarmeena/potato-disease-classifier
+git clone 
 cd potato-disease-detection
 
 Install dependencies:
 pip install -r requirements.txt
 
-Data Preprocessing
+Data Preprocessing:
 Image Collection: Gathered a dataset of potato leaf images from various sources.
 Annotation: Labeled images as healthy or diseased.
 Augmentation: Applied transformations such as rotation, flipping, and scaling to increase dataset size.
