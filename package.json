@@ -1,39 +1,36 @@
 {
-  "name": "photo",
-  "version": "0.1.0",
+  "name": "mlDemo",
+  "version": "0.0.1",
   "private": true,
-  "dependencies": {
-    "@material-ui/core": "^4.11.4",
-    "@material-ui/icons": "^4.11.2",
-    "axios": "^0.21.1",
-    "material-ui-dropzone": "^3.5.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "^4.0.3",
-    "web-vitals": "^1.1.2"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "bundle-ios": "npx react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle",
+    "test": "jest",
+    "lint": "eslint ."
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "dependencies": {
+    "axios": "^0.21.1",
+    "react": "17.0.1",
+    "react-native": "0.64.2",
+    "react-native-config": "^1.4.4",
+    "react-native-image-picker": "^4.0.4",
+    "react-native-permissions": "^3.0.5"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/runtime": "^7.14.6",
+    "@react-native-community/eslint-config": "^3.0.0",
+    "babel-jest": "^27.0.6",
+    "eslint": "^7.30.0",
+    "jest": "^27.0.6",
+    "metro": "^0.66.1",
+    "metro-core": "^0.66.1",
+    "metro-react-native-babel-preset": "^0.66.0",
+    "react-test-renderer": "17.0.1"
+  },
+  "jest": {
+    "preset": "react-native"
   }
 }
