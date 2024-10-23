@@ -1,55 +1,54 @@
-
-
-from fastapi import FastAPI, File, UploadFile
-from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
-import numpy as np
-from io import BytesIO
-from PIL import Image
+from google.cloud import storage
 import tensorflow as tf
+from PIL import Image
+import numpy as np
 
-app = FastAPI()
+model = None
+interpreter = None
+input_index = None
+output_index = None
 
-origins = [
-    "http://localhost",
-    "http://localhost:3000",
-]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+class_names = ["Early Blight", "Late Blight", "Healthy"]
 
-MODEL = tf.keras.models.load_model("../saved_models/1")
+BUCKET_NAME = "codebasics-tf-models" # Here you need to put the name of your GCP bucket
 
-CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
 
-@app.get("/ping")
-async def ping():
-    return "Hello, I am alive"
+def download_blob(bucket_name, source_blob_name, destination_file_name):
+    """Downloads a blob from the bucket."""
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket(bucket_name)
+    blob = bucket.blob(source_blob_name)
 
-def read_file_as_image(data) -> np.ndarray:
-    image = np.array(Image.open(BytesIO(data)))
-    return image
+    blob.download_to_filename(destination_file_name)
 
-@app.post("/predict")
-async def predict(
-    file: UploadFile = File(...)
-):
-    image = read_file_as_image(await file.read())
-    img_batch = np.expand_dims(image, 0)
-    
-    predictions = MODEL.predict(img_batch)
+    print(f"Blob {source_blob_name} downloaded to {destination_file_name}.")
 
-    predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
-    confidence = np.max(predictions[0])
-    return {
-        'class': predicted_class,
-        'confidence': float(confidence)
-    }
 
-if __name__ == "__main__":
-    uvicorn.run(app, host='localhost', port=8000)
+def predict(request):
+    global model
+    if model is None:
+        download_blob(
+            BUCKET_NAME,
+            "models/potatoes.h5",
+            "/tmp/potatoes.h5",
+        )
+        model = tf.keras.models.load_model("/tmp/potatoes.h5")
+
+    image = request.files["file"]
+
+    image = np.array(
+        Image.open(image).convert("RGB").resize((256, 256)) # image resizing
+    )
+
+    image = image/255 # normalize the image in 0 to 1 range
+
+    img_array = tf.expand_dims(img, 0)
+    predictions = model.predict(img_array)
+
+    print("Predictions:",predictions)
+
+    predicted_class = class_names[np.argmax(predictions[0])]
+    confidence = round(100 * (np.max(predictions[0])), 2)
+
+    return {"class": predicted_class, "confidence": confidence}
 
